@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "./theme.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Fira+Code:wght@400&family=JetBrains+Mono:wght@400&display=swap');
