@@ -832,7 +832,7 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-[4px]">
+          <div className="flex items-center gap-[8px]">
             {/* Catalog toggle */}
             <button
               type="button"
