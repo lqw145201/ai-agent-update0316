@@ -182,6 +182,8 @@ export function AIAgentPage() {
                       onFirstMessage={handleFirstMessage}
                       onToggleCatalog={catalogOpen ? closeCatalog : openCatalog}
                       catalogOpen={catalogOpen}
+                      onToggleWorkspace={workspaceOpen ? closeWorkspace : openWorkspace}
+                      workspaceOpen={workspaceOpen}
                     />
 
                   </Panel>
@@ -235,27 +237,6 @@ export function AIAgentPage() {
 
         </div>
 
-        {/* Workspace expand button (fixed bottom center) — hidden on landing */}
-        {!workspaceOpen && hasStarted && (
-          <div className="fixed bottom-[16px] left-1/2 -translate-x-1/2 z-50">
-            <button
-              className="bg-card border border-border rounded-[var(--radius-card)] px-[12px] py-[6px] cursor-pointer hover:bg-muted transition-colors shadow-sm flex items-center gap-[6px]"
-              onClick={openWorkspace}
-            >
-              <p
-                className="text-foreground"
-                style={{
-                  fontFamily: "var(--font-sans, 'Inter', sans-serif)",
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  lineHeight: "1.5",
-                }}
-              >
-                {WORKSPACE.showWorkspace}
-              </p>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

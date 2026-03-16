@@ -45,6 +45,9 @@ export type { OutputBlock, BlockType, CatalogActions };
 
 // LAYOUT — Props
 
+// Monitor icon path (viewBox: 0 0 16.6657 15.8337) — workspace toggle
+const PATH_MONITOR_CHAT = "M3.95833 15.8337C3.61316 15.8337 3.33333 15.5539 3.33333 15.2087C3.33333 14.8923 3.56846 14.6308 3.87352 14.5894L3.95833 14.5837L5.41583 14.5833V12.5017L1.875 12.5019C0.882613 12.5019 0.0702959 11.7309 0.00432571 10.7553L0 10.6269V1.875C0 0.882614 0.770968 0.0702959 1.74663 0.00432571L1.875 0H14.7907C15.7831 0 16.5954 0.770968 16.6614 1.74663L16.6657 1.875V10.6269C16.6657 11.6193 15.8947 12.4316 14.9191 12.4976L14.7907 12.5019L11.2492 12.5017V14.5833L12.7083 14.5837C13.0535 14.5837 13.3333 14.8635 13.3333 15.2087C13.3333 15.5251 13.0982 15.7866 12.7931 15.828L12.7083 15.8337H3.95833ZM9.99833 12.5017H6.665L6.66583 14.5837H9.99917L9.99833 12.5017ZM14.7907 1.25H1.875C1.55859 1.25 1.29709 1.48513 1.25571 1.79019L1.25 1.875V10.6269C1.25 10.9433 1.48513 11.2048 1.79019 11.2462L1.875 11.2519H14.7907C15.1071 11.2519 15.3686 11.0168 15.41 10.7117L15.4157 10.6269V1.875C15.4157 1.55859 15.1806 1.29709 14.8755 1.25571L14.7907 1.25Z";
+
 // Notebook/document icon path (viewBox: 0 0 13.75 16.6666) — catalog toggle
 const PATH_NOTEBOOK_CHAT = "M2.5 3.33333C2.5 3.11232 2.5878 2.90035 2.74408 2.74407C2.90036 2.58779 3.11232 2.5 3.33334 2.5H9.99997C10.221 2.5 10.433 2.58779 10.5893 2.74407C10.7456 2.90035 10.8334 3.11232 10.8334 3.33333V5C10.8334 5.22101 10.7456 5.43297 10.5893 5.58925C10.433 5.74553 10.221 5.83333 9.99997 5.83333H3.33334C3.11232 5.83333 2.90036 5.74553 2.74408 5.58925C2.5878 5.43297 2.5 5.22101 2.5 5V3.33333ZM3.75 4.58333H9.58337V3.75H3.75V4.58333ZM0 2.08333C0 1.5308 0.2195 1.00089 0.6102 0.61019C1.0009 0.21949 1.5308 0 2.08334 0H11.6667C11.9403 0 12.2112 0.0538801 12.464 0.15858C12.7167 0.26328 12.9464 0.41674 13.1398 0.61019C13.3333 0.80365 13.4868 1.03331 13.5914 1.28607C13.6961 1.53883 13.75 1.80974 13.75 2.08333V13.9583C13.75 14.1241 13.6842 14.283 13.567 14.4002C13.4498 14.5175 13.2908 14.5833 13.125 14.5833H1.25C1.25 14.8043 1.3378 15.0163 1.49408 15.1726C1.65036 15.3288 1.86232 15.4166 2.08334 15.4166H13.125C13.2908 15.4166 13.4498 15.4825 13.567 15.5997C13.6842 15.7169 13.75 15.8759 13.75 16.0416C13.75 16.2074 13.6842 16.3664 13.567 16.4836C13.4498 16.6008 13.2908 16.6666 13.125 16.6666H2.08334C1.5308 16.6666 1.0009 16.4471 0.6102 16.0564C0.2195 15.6657 0 15.1358 0 14.5833V2.08333ZM1.25 13.3333H12.5V2.08333C12.5 1.86232 12.4122 1.65035 12.256 1.49407C12.0997 1.33779 11.8877 1.25 11.6667 1.25H2.08334C1.86232 1.25 1.65036 1.33779 1.49408 1.49407C1.3378 1.65035 1.25 1.86232 1.25 2.08333V13.3333Z";
 
@@ -67,6 +70,8 @@ interface ChatPanelProps {
   onFirstMessage?: () => void;
   onToggleCatalog?: () => void;
   catalogOpen?: boolean;
+  onToggleWorkspace?: () => void;
+  workspaceOpen?: boolean;
 }
 
 /* ── Shared components ───────────────────────────────────────── */
@@ -725,7 +730,7 @@ function ViewBlockView({ block, onBlockClick, onBlockHover, hoveredBlock }: {
 /* ── Main Component ──────────────────────────────────────────── */
 
 /** Chat panel — renders messages, output blocks, and gradient-bordered input */
-export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsView, onRegisterActions, chatTitle, onBlocksCreated, isLanding, onFirstMessage, onToggleCatalog, catalogOpen }: ChatPanelProps) {
+export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsView, onRegisterActions, chatTitle, onBlocksCreated, isLanding, onFirstMessage, onToggleCatalog, catalogOpen, onToggleWorkspace, workspaceOpen }: ChatPanelProps) {
   // STATE — All chat state from custom hook
   const chat = useChat({ onRegisterActions, onBlocksCreated });
 
@@ -827,22 +832,40 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
               </p>
             </div>
           </div>
-          {/* Catalog toggle */}
-          <button
-            type="button"
-            title={catalogOpen ? "Close catalog" : "Open catalog"}
-            className={`relative rounded-[var(--radius-button)] shrink-0 size-[28px] cursor-pointer hover:bg-muted transition-colors flex items-center justify-center ${catalogOpen ? "bg-muted" : ""}`}
-            onClick={onToggleCatalog}
-          >
-            <div aria-hidden="true" className="absolute border border-border/50 border-solid inset-0 pointer-events-none rounded-[var(--radius-button)]" />
-            <div className="relative shrink-0 size-[16px]">
-              <div className="absolute inset-[8.33%_14.58%_8.33%_16.67%]">
-                <svg className="absolute block size-full" fill="none" viewBox="0 0 13.75 16.6666">
-                  <path d={PATH_NOTEBOOK_CHAT} fill="var(--secondary-foreground)" />
-                </svg>
+          <div className="flex items-center gap-[4px]">
+            {/* Catalog toggle */}
+            <button
+              type="button"
+              title={catalogOpen ? "Close catalog" : "Open catalog"}
+              className={`relative rounded-[var(--radius-button)] shrink-0 size-[28px] cursor-pointer hover:bg-muted transition-colors flex items-center justify-center ${catalogOpen ? "bg-muted" : ""}`}
+              onClick={onToggleCatalog}
+            >
+              <div aria-hidden="true" className="absolute border border-border/50 border-solid inset-0 pointer-events-none rounded-[var(--radius-button)]" />
+              <div className="relative shrink-0 size-[16px]">
+                <div className="absolute inset-[8.33%_14.58%_8.33%_16.67%]">
+                  <svg className="absolute block size-full" fill="none" viewBox="0 0 13.75 16.6666">
+                    <path d={PATH_NOTEBOOK_CHAT} fill="var(--secondary-foreground)" />
+                  </svg>
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+            {/* Workspace toggle */}
+            <button
+              type="button"
+              title={workspaceOpen ? "Close workspace" : "Open workspace"}
+              className={`relative rounded-[var(--radius-button)] shrink-0 size-[28px] cursor-pointer hover:bg-muted transition-colors flex items-center justify-center ${workspaceOpen ? "bg-muted" : ""}`}
+              onClick={onToggleWorkspace}
+            >
+              <div aria-hidden="true" className="absolute border border-border/50 border-solid inset-0 pointer-events-none rounded-[var(--radius-button)]" />
+              <div className="relative shrink-0 size-[16px]">
+                <div className="absolute inset-[8.33%_8.34%_8.33%_8.33%]">
+                  <svg className="absolute block size-full" fill="none" viewBox="0 0 16.6657 15.8337">
+                    <path d={PATH_MONITOR_CHAT} fill="var(--secondary-foreground)" />
+                  </svg>
+                </div>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
 
