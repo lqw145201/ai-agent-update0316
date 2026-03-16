@@ -16,6 +16,7 @@ interface ChatInputProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   contextChips: ContextChip[];
   onRemoveChip: (chipId: string) => void;
+  variant?: "default" | "landing";
 }
 
 // LAYOUT — Component
@@ -29,7 +30,9 @@ export function ChatInput({
   textareaRef,
   contextChips,
   onRemoveChip,
+  variant = "default",
 }: ChatInputProps) {
+  const isLanding = variant === "landing";
   // COPY
   const placeholder = contextChips.length > 0 ? CHAT_PANEL.inputPlaceholderWithChips : CHAT_PANEL.inputPlaceholder;
 
@@ -38,7 +41,7 @@ export function ChatInput({
     <div className="shrink-0 w-full pb-[16px] px-[16px]">
       <div
         className="bg-card relative rounded-[var(--radius-card)] w-full"
-        style={{ padding: "12px 16px" }}
+        style={{ padding: isLanding ? "16px 20px" : "12px 16px" }}
       >
         {/* LAYOUT — Border overlay: gradient stroke from Figma Form2 */}
         <div
@@ -105,8 +108,8 @@ export function ChatInput({
               }}
               onKeyDown={onKeyDown}
               placeholder={placeholder}
-              rows={2}
-              className="chat-input-textarea flex-1 bg-transparent outline-none resize-none min-h-[42px] max-h-[120px]"
+              rows={isLanding ? 3 : 2}
+              className={`chat-input-textarea flex-1 bg-transparent outline-none resize-none max-h-[120px] ${isLanding ? "min-h-[64px]" : "min-h-[42px]"}`}
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "var(--text-base)",

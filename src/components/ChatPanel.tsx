@@ -801,6 +801,7 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
               textareaRef={chat.textareaRef}
               contextChips={chat.contextChips}
               onRemoveChip={chat.removeContextChip}
+              variant="landing"
             />
           </div>
         </div>
