@@ -31,6 +31,10 @@ const PATH_AI_SPARKLE = "M12.059 8.49519C12.657 6.74519 15.075 6.69219 15.784 8.
 import { useChat } from "../hooks/useChat";
 import type { OutputBlock, BlockType, ApprovalData, WikiReviewData, CatalogActions } from "../hooks/useChat";
 
+// Add Data modal
+import { AddDataModal } from "./AddDataModal";
+import type { AddedSource } from "./AddDataModal";
+
 // LAYOUT — Shared input component
 import { ChatInput } from "./ChatInput";
 
@@ -72,6 +76,7 @@ interface ChatPanelProps {
   catalogOpen?: boolean;
   onToggleWorkspace?: () => void;
   workspaceOpen?: boolean;
+  onDataAdded?: (source: AddedSource) => void;
 }
 
 /* ── Shared components ───────────────────────────────────────── */
@@ -730,9 +735,19 @@ function ViewBlockView({ block, onBlockClick, onBlockHover, hoveredBlock }: {
 /* ── Main Component ──────────────────────────────────────────── */
 
 /** Chat panel — renders messages, output blocks, and gradient-bordered input */
-export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsView, onRegisterActions, chatTitle, onBlocksCreated, isLanding, onFirstMessage, onToggleCatalog, catalogOpen, onToggleWorkspace, workspaceOpen }: ChatPanelProps) {
+export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsView, onRegisterActions, chatTitle, onBlocksCreated, isLanding, onFirstMessage, onToggleCatalog, catalogOpen, onToggleWorkspace, workspaceOpen, onDataAdded }: ChatPanelProps) {
   // STATE — All chat state from custom hook
   const chat = useChat({ onRegisterActions, onBlocksCreated });
+
+  // STATE — Add Data modal
+  const [addDataModalOpen, setAddDataModalOpen] = useState(false);
+
+  const handleOpenAddData = useCallback(() => setAddDataModalOpen(true), []);
+  const handleCloseAddData = useCallback(() => setAddDataModalOpen(false), []);
+  const handleDataAdded = useCallback((source: AddedSource) => {
+    onDataAdded?.(source);
+    setAddDataModalOpen(false);
+  }, [onDataAdded]);
 
   // INTERACTION — Landing send: notify parent then handle normally
   const handleLandingSend = useCallback(() => {
@@ -742,7 +757,7 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
     }
   }, [chat.inputValue, chat.handleSend, onFirstMessage]);
 
-  const handleLandingKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleLandingKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey && chat.inputValue.trim()) {
       onFirstMessage?.();
     }
@@ -802,8 +817,12 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
               contextChips={chat.contextChips}
               onRemoveChip={chat.removeContextChip}
               variant="landing"
+              onAddData={handleOpenAddData}
             />
           </div>
+          {addDataModalOpen && (
+            <AddDataModal onClose={handleCloseAddData} onDataAdded={handleDataAdded} />
+          )}
         </div>
       </div>
     );
@@ -930,7 +949,13 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
         textareaRef={chat.textareaRef}
         contextChips={chat.contextChips}
         onRemoveChip={chat.removeContextChip}
+        onAddData={handleOpenAddData}
       />
+
+      {/* Add Data modal — portal renders above everything */}
+      {addDataModalOpen && (
+        <AddDataModal onClose={handleCloseAddData} onDataAdded={handleDataAdded} />
+      )}
     </div>
   );
 }

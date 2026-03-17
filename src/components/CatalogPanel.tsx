@@ -35,6 +35,7 @@ interface CatalogPanelProps {
   onSaveView?: (viewName: string, locationPath: string) => void;
   onCancelSave?: () => void;
   catalogActions?: CatalogActions | null;
+  addedSources?: Array<{ name: string; type: "file" | "source" }>;
 }
 
 interface TreeNode {
@@ -715,7 +716,7 @@ function SaveBlockBadge({ type }: { type: BlockType }) {
 
 /* ── Main component ─────────────────────────────────────── */
 
-export function CatalogPanel({ onCollapse, saveViewMode, onSaveView, onCancelSave, catalogActions }: CatalogPanelProps) {
+export function CatalogPanel({ onCollapse, saveViewMode, onSaveView, onCancelSave, catalogActions, addedSources }: CatalogPanelProps) {
   const isSaveMode = !!saveViewMode;
   const [viewName, setViewName] = useState("");
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
@@ -947,6 +948,50 @@ export function CatalogPanel({ onCollapse, saveViewMode, onSaveView, onCancelSav
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
+
+        {/* My Data section — shown when sources have been added via Add Data modal */}
+        {addedSources && addedSources.length > 0 && (
+          <div className="w-full border-b border-border pb-[4px] mb-[4px]">
+            <div className="flex gap-[6px] items-center px-[12px] py-[8px] w-full">
+              <p className="flex-1 font-['Inter',sans-serif] font-normal leading-[150%] text-secondary-foreground text-[12px]">
+                <span>My Data </span>
+                <span>({addedSources.length})</span>
+              </p>
+            </div>
+            <div className="flex flex-col items-start w-full">
+              {addedSources.map((src, i) => (
+                <div
+                  key={`added-${i}`}
+                  className="flex items-center gap-[6px] w-full px-[12px] py-[6px] hover:bg-muted transition-colors cursor-default"
+                >
+                  <div className="shrink-0 size-[14px] flex items-center justify-center">
+                    {src.type === "file" ? (
+                      /* File icon */
+                      <svg width="12" height="14" viewBox="0 0 12 14" fill="none">
+                        <path d="M1 1.5C1 0.948 1.448 0.5 2 0.5H7L11 4.5V12.5C11 13.052 10.552 13.5 10 13.5H2C1.448 13.5 1 13.052 1 12.5V1.5Z" stroke="var(--accent)" strokeWidth="1" fill="none"/>
+                        <path d="M7 0.5V4.5H11" stroke="var(--accent)" strokeWidth="1" strokeLinejoin="round" fill="none"/>
+                      </svg>
+                    ) : (
+                      /* Source/connection icon */
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <rect x="0.5" y="0.5" width="11" height="11" rx="2" stroke="var(--accent)" strokeWidth="1" fill="none"/>
+                        <path d="M1 4H11M4 1V11" stroke="var(--accent)" strokeWidth="1"/>
+                      </svg>
+                    )}
+                  </div>
+                  <p
+                    className="flex-1 text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-sans)", fontSize: "12px", fontWeight: "var(--font-weight-normal)", lineHeight: "1.5" }}
+                  >
+                    {src.name}
+                  </p>
+                  <span className="shrink-0 text-[10px] text-accent font-medium">New</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Namespaces section */}
         <div className="w-full">
           <div className="flex gap-[6px] items-center px-[12px] py-[8px] w-full">

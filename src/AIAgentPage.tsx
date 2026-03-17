@@ -23,6 +23,7 @@ import { COLLAPSED_PANELS, WORKSPACE, CHAT_LIST_ITEMS } from "./constants/string
 
 // STATE — Type imports
 import type { OutputBlock, CatalogActions } from "./hooks/useChat";
+import type { AddedSource } from "./components/AddDataModal";
 
 /** Main AI Agent page — orchestrates the 4-panel layout */
 export function AIAgentPage() {
@@ -54,10 +55,20 @@ export function AIAgentPage() {
   // STATE — Whether user has started chatting (false = landing page)
   const [hasStarted, setHasStarted] = useState(false);
 
+  // STATE — Sources added via Add Data modal
+  const [addedSources, setAddedSources] = useState<AddedSource[]>([]);
+
   // INTERACTION — First message sent from landing page
   const handleFirstMessage = useCallback(() => {
     setHasStarted(true);
   }, []);
+
+  // INTERACTION — Data source added from modal: transition to chat, open catalog
+  const handleDataAdded = useCallback((source: AddedSource) => {
+    setHasStarted(true);
+    openCatalog();
+    setAddedSources((prev) => [...prev, source]);
+  }, [openCatalog]);
 
   // STATE — Chat selection
   const [selectedChat, setSelectedChat] = useState(0);
@@ -184,6 +195,7 @@ export function AIAgentPage() {
                       catalogOpen={catalogOpen}
                       onToggleWorkspace={workspaceOpen ? closeWorkspace : openWorkspace}
                       workspaceOpen={workspaceOpen}
+                      onDataAdded={handleDataAdded}
                     />
 
                   </Panel>
@@ -228,6 +240,7 @@ export function AIAgentPage() {
                       onSaveView={() => {}}
                       onCancelSave={() => {}}
                       catalogActions={chatActions?.catalogActions ?? null}
+                      addedSources={addedSources}
                     />
                   </div>
                 </Panel>

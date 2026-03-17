@@ -17,6 +17,7 @@ interface ChatInputProps {
   contextChips: ContextChip[];
   onRemoveChip: (chipId: string) => void;
   variant?: "default" | "landing";
+  onAddData?: () => void;
 }
 
 // LAYOUT — Component
@@ -31,6 +32,7 @@ export function ChatInput({
   contextChips,
   onRemoveChip,
   variant = "default",
+  onAddData,
 }: ChatInputProps) {
   const isLanding = variant === "landing";
   // COPY
@@ -97,32 +99,45 @@ export function ChatInput({
             </div>
           )}
 
-          {/* LAYOUT — Input row with send button */}
-          <div className="flex items-end gap-[8px] w-full">
-            <textarea
-              ref={textareaRef}
-              value={inputValue}
-              onChange={(e) => {
-                onInputChange(e.target.value);
-                onInput();
-              }}
-              onKeyDown={onKeyDown}
-              placeholder={placeholder}
-              rows={isLanding ? 3 : 2}
-              className={`chat-input-textarea flex-1 bg-transparent outline-none resize-none max-h-[120px] ${isLanding ? "min-h-[64px]" : "min-h-[42px]"}`}
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "var(--text-base)",
-                fontWeight: "var(--font-weight-normal)",
-                lineHeight: "1.5",
-                color: "var(--foreground)",
-              }}
-            />
+          {/* LAYOUT — Textarea (full width) */}
+          <textarea
+            ref={textareaRef}
+            value={inputValue}
+            onChange={(e) => {
+              onInputChange(e.target.value);
+              onInput();
+            }}
+            onKeyDown={onKeyDown}
+            placeholder={placeholder}
+            rows={isLanding ? 3 : 2}
+            className={`chat-input-textarea w-full bg-transparent outline-none resize-none max-h-[120px] ${isLanding ? "min-h-[64px]" : "min-h-[42px]"}`}
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "var(--text-base)",
+              fontWeight: "var(--font-weight-normal)",
+              lineHeight: "1.5",
+              color: "var(--foreground)",
+            }}
+          />
 
+          {/* LAYOUT — Bottom action bar: + Add data (left) | Send (right) */}
+          <div className="flex items-center pt-[6px]">
+            {onAddData && (
+              <button
+                type="button"
+                onClick={onAddData}
+                className="flex items-center gap-[4px] h-[26px] px-[8px] rounded-[var(--radius-button)] border border-[var(--border)] text-[12px] text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors shrink-0"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M5 1V9M1 5H9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+                <span>Add data</span>
+              </button>
+            )}
             {/* INTERACTION — Send button: gradient icon from IconSend */}
             <button
               type="button"
-              className="shrink-0 size-[32px] cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center mb-[2px]"
+              className="ml-auto shrink-0 size-[32px] cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
               onClick={onSend}
               aria-label="Send message"
             >
