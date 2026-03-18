@@ -54,7 +54,7 @@ export function DropdownMenu({ anchorRect, items, onClose, align = "right", plac
           className="h-[32px] w-full text-left flex items-center cursor-pointer select-none hover:bg-background-hover transition-colors"
           onClick={() => { item.onClick(); onClose(); }}
         >
-          <div className="flex items-center pl-[16px] pr-[8px] size-full">
+          <div className="flex items-center px-[16px] size-full">
             <span
               className={`flex-1 whitespace-nowrap ${item.variant === "destructive" ? "text-destructive" : "text-popover-foreground"}`}
               style={{
