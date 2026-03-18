@@ -166,6 +166,32 @@
 }
 
 /**
+ * ── Standard icon button hover interaction ────────────────────────────────
+ *
+ * Use this pattern for ALL small icon buttons (close, dismiss, collapse, etc.).
+ * Do NOT use opacity changes (hover:opacity-70) — always use background fill.
+ *
+ * Tailwind classes:
+ *   size-[24px] flex items-center justify-center rounded-[4px]
+ *   text-[var(--muted-foreground)] hover:text-[var(--foreground)]
+ *   hover:bg-[var(--muted)] transition-colors cursor-pointer
+ *
+ * Icon: inline SVG, 10×10, stroke="currentColor", strokeWidth="1.5"
+ *   Close ×:  <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+ *
+ * Example:
+ *   <button type="button" onClick={onClose}
+ *     className="size-[24px] flex items-center justify-center rounded-[4px]
+ *                text-[var(--muted-foreground)] hover:text-[var(--foreground)]
+ *                hover:bg-[var(--muted)] transition-colors cursor-pointer">
+ *     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+ *       <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+ *     </svg>
+ *   </button>
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+
+/**
  * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
  */
 @layer base {

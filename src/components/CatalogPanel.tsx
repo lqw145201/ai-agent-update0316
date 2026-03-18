@@ -25,6 +25,7 @@ const PATH_CIRCLE = "M13.3333 6.66667C13.3333 10.3486 10.3486 13.3333 6.66667 13
 // Notebook/document icon (viewBox: 0 0 13.75 16.6666)
 const PATH_NOTEBOOK = "M2.5 3.33333C2.5 3.11232 2.5878 2.90035 2.74408 2.74407C2.90036 2.58779 3.11232 2.5 3.33334 2.5H9.99997C10.221 2.5 10.433 2.58779 10.5893 2.74407C10.7456 2.90035 10.8334 3.11232 10.8334 3.33333V5C10.8334 5.22101 10.7456 5.43297 10.5893 5.58925C10.433 5.74553 10.221 5.83333 9.99997 5.83333H3.33334C3.11232 5.83333 2.90036 5.74553 2.74408 5.58925C2.5878 5.43297 2.5 5.22101 2.5 5V3.33333ZM3.75 4.58333H9.58337V3.75H3.75V4.58333ZM0 2.08333C0 1.5308 0.2195 1.00089 0.6102 0.61019C1.0009 0.21949 1.5308 0 2.08334 0H11.6667C11.9403 0 12.2112 0.0538801 12.464 0.15858C12.7167 0.26328 12.9464 0.41674 13.1398 0.61019C13.3333 0.80365 13.4868 1.03331 13.5914 1.28607C13.6961 1.53883 13.75 1.80974 13.75 2.08333V13.9583C13.75 14.1241 13.6842 14.283 13.567 14.4002C13.4498 14.5175 13.2908 14.5833 13.125 14.5833H1.25C1.25 14.8043 1.3378 15.0163 1.49408 15.1726C1.65036 15.3288 1.86232 15.4166 2.08334 15.4166H13.125C13.2908 15.4166 13.4498 15.4825 13.567 15.5997C13.6842 15.7169 13.75 15.8759 13.75 16.0416C13.75 16.2074 13.6842 16.3664 13.567 16.4836C13.4498 16.6008 13.2908 16.6666 13.125 16.6666H2.08334C1.5308 16.6666 1.0009 16.4471 0.6102 16.0564C0.2195 15.6657 0 15.1358 0 14.5833V2.08333ZM1.25 13.3333H12.5V2.08333C12.5 1.86232 12.4122 1.65035 12.256 1.49407C12.0997 1.33779 11.8877 1.25 11.6667 1.25H2.08334C1.86232 1.25 1.65036 1.33779 1.49408 1.49407C1.3378 1.65035 1.25 1.86232 1.25 2.08333V13.3333Z";
 import { IconMore } from "./icons/IconMore";
+import { IconClose } from "./icons/IconClose";
 import type { BlockType, CatalogActions } from "../hooks/useChat";
 import { IconEntityTable } from "./icons/IconEntityTable";
 import { IconEntityView } from "./icons/IconEntityView";
@@ -827,25 +828,33 @@ export function CatalogPanel({ onCollapse, saveViewMode, onSaveView, onCancelSav
       {/* Header */}
       <div className="h-[52px] shrink-0 w-full relative">
         <div aria-hidden="true" className="absolute border-muted border-b border-solid left-0 right-0 bottom-0 pointer-events-none" style={{ height: "1px" }} />
-        <div className="flex gap-[8px] items-center pl-[12px] size-full">
-          <div className="relative shrink-0 size-[20px]">
-            <div className="absolute inset-[8.33%_14.58%_8.33%_16.67%]">
-              <svg className="absolute block size-full" fill="none" viewBox="0 0 13.75 16.6666">
-                <path d={PATH_NOTEBOOK} fill="var(--secondary-foreground)" />
-              </svg>
+        <div className="flex gap-[8px] items-center justify-between pl-[12px] pr-[8px] size-full">
+          <div className="flex gap-[8px] items-center">
+            <div className="relative shrink-0 size-[20px]">
+              <div className="absolute inset-[8.33%_14.58%_8.33%_16.67%]">
+                <svg className="absolute block size-full" fill="none" viewBox="0 0 13.75 16.6666">
+                  <path d={PATH_NOTEBOOK} fill="var(--secondary-foreground)" />
+                </svg>
+              </div>
             </div>
+            <p
+              className="text-secondary-foreground whitespace-nowrap"
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "var(--text-base)",
+                fontWeight: "var(--font-weight-semibold)",
+                lineHeight: "1.5",
+              }}
+            >
+              {isSaveMode ? "Save as View" : "Catalog"}
+            </p>
           </div>
-          <p
-            className="text-secondary-foreground whitespace-nowrap"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-base)",
-              fontWeight: "var(--font-weight-semibold)",
-              lineHeight: "1.5",
-            }}
-          >
-            {isSaveMode ? "Save as View" : "Catalog"}
-          </p>
+          {/* Close */}
+          <button type="button" onClick={onCollapse} className="size-[24px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors cursor-pointer">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -1011,7 +1020,7 @@ export function CatalogPanel({ onCollapse, saveViewMode, onSaveView, onCancelSav
                     Powered by Polaris
                   </p>
                 </div>
-                <div className="flex items-center justify-center shrink-0 size-[22px] cursor-pointer hover:bg-muted rounded-[var(--radius-button)] transition-colors">
+                <div className="flex items-center justify-center shrink-0 size-[24px] cursor-pointer hover:bg-muted rounded-[var(--radius-button)] transition-colors">
                   <div className="relative shrink-0 size-[20px]">
                     <div className="absolute inset-[16.67%]">
                       <svg className="absolute block size-full" fill="none" viewBox="0 0 13.3333 13.3333">
@@ -1053,7 +1062,7 @@ export function CatalogPanel({ onCollapse, saveViewMode, onSaveView, onCancelSav
               <span>(4)</span>
             </p>
             {!isSaveMode && (
-              <div className="flex items-center justify-center shrink-0 size-[22px] cursor-pointer hover:bg-muted rounded-[var(--radius-button)] transition-colors">
+              <div className="flex items-center justify-center shrink-0 size-[24px] cursor-pointer hover:bg-muted rounded-[var(--radius-button)] transition-colors">
                 <div className="relative shrink-0 size-[20px]">
                   <div className="absolute inset-[16.67%]">
                     <svg className="absolute block size-full" fill="none" viewBox="0 0 13.3333 13.3333">

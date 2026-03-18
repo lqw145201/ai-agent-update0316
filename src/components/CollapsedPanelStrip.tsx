@@ -27,17 +27,17 @@ export function CollapsedPanelStrip({ side, onExpand }: CollapsedPanelStripProps
           <div className="flex-1 min-h-0">
             <div className="flex flex-col gap-[8px] h-full items-center">
               {/* New chat */}
-              <div className="flex items-center justify-center rounded-[10px] shrink-0 size-[32px] hover:bg-muted transition-colors">
+              <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[32px] hover:bg-muted transition-colors">
                 <IconPlus size={20} style={{ color: "var(--secondary-foreground)" }} />
               </div>
               {/* Search */}
-              <div className="flex items-center justify-center rounded-[10px] shrink-0 size-[32px] hover:bg-muted transition-colors">
+              <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[32px] hover:bg-muted transition-colors">
                 <IconSearch size={20} style={{ color: "var(--secondary-foreground)" }} />
               </div>
             </div>
           </div>
           {/* Expand button at bottom */}
-          <div className="rounded-[10px] shrink-0 size-[32px] flex items-center justify-center hover:bg-muted transition-colors">
+          <div className="rounded-[4px] shrink-0 size-[32px] flex items-center justify-center hover:bg-muted transition-colors">
             <IconNavExpandMenu size={20} style={{ color: "var(--secondary-foreground)" }} />
           </div>
         </div>
@@ -62,13 +62,13 @@ export function CollapsedPanelStrip({ side, onExpand }: CollapsedPanelStripProps
         {/* Top button — Catalog icon */}
         <div className="flex-1 min-h-0">
           <div className="flex flex-col gap-[8px] h-full items-center">
-            <div className="flex items-center justify-center rounded-[10px] shrink-0 size-[32px] hover:bg-muted transition-colors">
+            <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[32px] hover:bg-muted transition-colors">
               <IconNavCatalog size={20} style={{ color: "var(--secondary-foreground)" }} />
             </div>
           </div>
         </div>
         {/* Expand button at bottom — mirrored horizontally */}
-        <div className="rounded-[10px] shrink-0 size-[32px] flex items-center justify-center hover:bg-muted transition-colors">
+        <div className="rounded-[4px] shrink-0 size-[32px] flex items-center justify-center hover:bg-muted transition-colors">
           <IconNavExpandMenu
             size={20}
             style={{

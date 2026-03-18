@@ -102,7 +102,7 @@ export function ClarifyingQuestions({ data, onSubmit, onSkip, onClose, anchorRef
               type="button"
               onClick={() => setStep((s) => Math.max(0, s - 1))}
               disabled={step === 0}
-              className="size-[22px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              className="size-[24px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
               <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
                 <path d="M5 1L1 5L5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -118,7 +118,7 @@ export function ClarifyingQuestions({ data, onSubmit, onSkip, onClose, anchorRef
               type="button"
               onClick={() => setStep((s) => Math.min(total - 1, s + 1))}
               disabled={step === total - 1}
-              className="size-[22px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              className="size-[24px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
               <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
                 <path d="M1 1L5 5L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -130,7 +130,7 @@ export function ClarifyingQuestions({ data, onSubmit, onSkip, onClose, anchorRef
           <button
             type="button"
             onClick={onClose}
-            className="size-[22px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+            className="size-[24px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

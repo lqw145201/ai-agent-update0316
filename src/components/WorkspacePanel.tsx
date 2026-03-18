@@ -1109,10 +1109,10 @@ export function WorkspacePanel({ activeBlock, blockHistory, onClose, onSelectBlo
           </p>
           <div className="flex gap-[8px] items-center">
             {/* Close */}
-            <button type="button" className="relative shrink-0 size-[24px] cursor-pointer hover:opacity-70 transition-opacity" onClick={onClose}>
-              <div className="absolute inset-1/4">
-                <IconClose size={12} style={{ color: "var(--secondary-foreground)" }} />
-              </div>
+            <button type="button" onClick={onClose} className="size-[24px] flex items-center justify-center rounded-[4px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors cursor-pointer">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
             </button>
           </div>
         </div>

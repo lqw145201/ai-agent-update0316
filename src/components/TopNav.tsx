@@ -26,8 +26,8 @@ export function ProjectDropdown({ projectName = "First Lakehouse" }: ProjectDrop
         style={{ borderColor: "var(--border)" }}
       />
       <p
-        className="flex-1 font-['Inter',sans-serif] font-semibold leading-[150%] text-[14px]"
-        style={{ color: "var(--foreground)" }}
+        className="flex-1 font-['Inter',sans-serif] font-normal leading-[150%] text-[14px]"
+        style={{ color: "var(--secondary-foreground)" }}
       >
         {projectName}
       </p>
