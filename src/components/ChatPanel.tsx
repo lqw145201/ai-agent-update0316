@@ -37,7 +37,7 @@ import type { AddedSource } from "./AddDataModal";
 
 // LAYOUT — Shared input component
 import { ChatInput } from "./ChatInput";
-import { SuggestedQuestions } from "./SuggestedQuestions";
+import { ClarifyingQuestions } from "./ClarifyingQuestions";
 
 // LAYOUT — Tool calls block
 import { ToolCallsBlock } from "./ToolCallsBlock";
@@ -893,8 +893,7 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
       {/* Chat messages */}
       <div className="flex-1 overflow-y-auto px-[16px] py-[16px]">
         <div className="flex flex-col gap-[16px] items-center">
-          {chat.messages.map((msg, idx) => {
-            const isLastMsg = idx === chat.messages.length - 1;
+          {chat.messages.map((msg) => {
             return msg.role === "user" ? (
               <div key={msg.id} className="flex items-start justify-end w-full">
                 <div className="bg-muted rounded-tl-[var(--radius-card)] rounded-tr-[var(--radius-card)] rounded-br-[var(--radius-button)] rounded-bl-[var(--radius-card)] max-w-[80%]">
@@ -922,12 +921,6 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
                   <WikiReviewBlockView wikiReview={msg.wikiReview} onSave={chat.handleWikiSave} onDismiss={chat.handleWikiDismiss} onBlockClick={onBlockClick} onBlockHover={onBlockHover} hoveredBlock={hoveredBlock} />
                 )}
                 {msg.blocks?.map((block) => renderBlock(block))}
-                {isLastMsg && !chat.isTyping && msg.suggestedQuestions && msg.suggestedQuestions.length > 0 && (
-                  <SuggestedQuestions
-                    questions={msg.suggestedQuestions}
-                    onSelect={(q) => { chat.setInputValue(q); chat.textareaRef.current?.focus(); }}
-                  />
-                )}
               </div>
             );
           })}
@@ -946,6 +939,32 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
           <div ref={chat.messagesEndRef} />
         </div>
       </div>
+
+      {/* Clarifying questions panel — shown above input when last AI msg needs context */}
+      {(() => {
+        const lastMsg = chat.messages[chat.messages.length - 1];
+        if (!chat.isTyping && lastMsg?.role === "ai" && lastMsg.clarifyingQuestion) {
+          return (
+            <ClarifyingQuestions
+              data={lastMsg.clarifyingQuestion}
+              onSubmit={(answers, freeText) => {
+                const parts = [
+                  ...Object.entries(answers).map(([, v]) => v),
+                  ...(freeText.trim() ? [freeText.trim()] : []),
+                ].filter(Boolean);
+                const msg = parts.length > 0 ? parts.join(", ") : "Continue";
+                chat.setInputValue(msg);
+                setTimeout(() => chat.handleSend(), 0);
+              }}
+              onSkip={() => {
+                chat.setInputValue("Skip clarifying questions");
+                setTimeout(() => chat.handleSend(), 0);
+              }}
+            />
+          );
+        }
+        return null;
+      })()}
 
       {/* Chat input — Figma gradient border */}
       <ChatInput

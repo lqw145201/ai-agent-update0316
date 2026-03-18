@@ -1,7 +1,7 @@
 // SERVICES — Mock AI response generation and data factories
 // When replacing with real API calls, only this file and /hooks need to change
 
-import type { OutputBlock, ChatMessage, ApprovalData } from "../hooks/useChat";
+import type { OutputBlock, ChatMessage, ApprovalData, ClarifyingQuestionData } from "../hooks/useChat";
 import type { ToolCallGroup } from "../hooks/useChat";
 
 // STATE — Mock data generators
@@ -199,12 +199,6 @@ FROM marketing.campaigns;`;
           schema: "bronze.customer_360",
           status: "pending",
         },
-        suggestedQuestions: [
-          "Now build the Silver layer",
-          "What are the join keys across tables?",
-          "Show me the Gold layer schema",
-          "How do I query this data?",
-        ],
       },
     ];
   }
@@ -247,12 +241,6 @@ FROM marketing.campaigns;`;
         role: "ai",
         text: "Here are your revenue figures — Northeast leads with $4.25M across 12,450 customers.",
         blocks: [mockTable],
-        suggestedQuestions: [
-          "Show me a chart of this",
-          "Break down by month",
-          "Filter to top 5 regions",
-          "Save this as a view",
-        ],
       },
     ];
   }
@@ -270,6 +258,32 @@ FROM marketing.campaigns;`;
 
   if (q.includes("explain") || q.includes("what") || q.includes("why") || q.includes("how")) {
     return [{ id: `ai-${ts}-1`, role: "ai", text: "Here's a detailed breakdown:", blocks: [generateMockExplainResult()] }];
+  }
+
+  // Vague/open-ended requests → clarifying questions
+  if (
+    q.includes("analyze") || q.includes("analyse") ||
+    q.includes("dashboard") || q.includes("help") ||
+    q.includes("explore") || q.includes("build") ||
+    q.includes("create") || q.includes("report")
+  ) {
+    const cq: ClarifyingQuestionData = {
+      id: `cq-${ts}`,
+      intro: "Before I proceed, I'd like to ask a few quick questions.",
+      questions: [
+        {
+          id: "dataset",
+          label: "Which dataset are you working with?",
+          options: ["Customer 360", "NYC Taxi Trips", "Sales Transactions", "Citibike"],
+        },
+        {
+          id: "goal",
+          label: "What's your primary goal?",
+          options: ["Explore the data", "Build a dashboard", "Create a view", "Optimize a query"],
+        },
+      ],
+    };
+    return [{ id: `ai-${ts}-1`, role: "ai", clarifyingQuestion: cq }];
   }
 
   const defaultSql: OutputBlock = {
@@ -300,12 +314,6 @@ FROM marketing.campaigns;`;
       role: "ai",
       text: "Found 100 matching records. Here's a preview of the data:",
       blocks: [defaultTable],
-      suggestedQuestions: [
-        "Visualize this as a chart",
-        "Filter by date range",
-        "Save as a view",
-        "Explain this query",
-      ],
     },
   ];
 }

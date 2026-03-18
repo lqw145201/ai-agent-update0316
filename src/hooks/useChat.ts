@@ -71,6 +71,18 @@ export interface CatalogActions {
   viewDatasetProfile: (nodeId: string, nodeLabel: string) => void;
 }
 
+export interface ClarifyingQuestion {
+  id: string;
+  label: string;
+  options: string[];
+}
+
+export interface ClarifyingQuestionData {
+  id: string;
+  intro: string;
+  questions: ClarifyingQuestion[];
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "ai";
@@ -79,7 +91,7 @@ export interface ChatMessage {
   approval?: ApprovalData;
   wikiReview?: WikiReviewData;
   toolCalls?: ToolCallGroup;
-  suggestedQuestions?: string[];
+  clarifyingQuestion?: ClarifyingQuestionData;
 }
 
 // STATE — Initial messages seed
