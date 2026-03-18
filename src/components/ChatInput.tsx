@@ -126,9 +126,9 @@ export function ChatInput({
               <button
                 type="button"
                 onClick={onAddData}
-                className="flex items-center gap-[4px] h-[26px] px-[8px] rounded-[var(--radius-button)] border border-[var(--border)] text-[12px] text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors shrink-0"
+                className="flex items-center gap-[5px] h-[30px] px-[10px] rounded-[var(--radius-button)] text-[14px] text-[var(--accent)] hover:bg-[var(--muted)] transition-colors shrink-0"
               >
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <svg width="13" height="13" viewBox="0 0 10 10" fill="none">
                   <path d="M5 1V9M1 5H9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                 </svg>
                 <span>Add data</span>
