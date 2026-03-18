@@ -742,6 +742,8 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
 
   // STATE — Add Data modal
   const [addDataModalOpen, setAddDataModalOpen] = useState(false);
+  const [dismissedClarifyingId, setDismissedClarifyingId] = useState<string | null>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleOpenAddData = useCallback(() => setAddDataModalOpen(true), []);
   const handleCloseAddData = useCallback(() => setAddDataModalOpen(false), []);
@@ -940,18 +942,21 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
         </div>
       </div>
 
-      {/* Clarifying questions panel — shown above input when last AI msg needs context */}
+      {/* Clarifying questions — portal floats above input, anchored to inputWrapperRef */}
       {(() => {
         const lastMsg = chat.messages[chat.messages.length - 1];
-        if (!chat.isTyping && lastMsg?.role === "ai" && lastMsg.clarifyingQuestion) {
+        if (
+          !chat.isTyping &&
+          lastMsg?.role === "ai" &&
+          lastMsg.clarifyingQuestion &&
+          dismissedClarifyingId !== lastMsg.clarifyingQuestion.id
+        ) {
           return (
             <ClarifyingQuestions
               data={lastMsg.clarifyingQuestion}
-              onSubmit={(answers, freeText) => {
-                const parts = [
-                  ...Object.entries(answers).map(([, v]) => v),
-                  ...(freeText.trim() ? [freeText.trim()] : []),
-                ].filter(Boolean);
+              anchorRef={inputWrapperRef}
+              onSubmit={(answers) => {
+                const parts = Object.entries(answers).map(([, v]) => v).filter(Boolean);
                 const msg = parts.length > 0 ? parts.join(", ") : "Continue";
                 chat.setInputValue(msg);
                 setTimeout(() => chat.handleSend(), 0);
@@ -960,6 +965,7 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
                 chat.setInputValue("Skip clarifying questions");
                 setTimeout(() => chat.handleSend(), 0);
               }}
+              onClose={() => setDismissedClarifyingId(lastMsg.clarifyingQuestion!.id)}
             />
           );
         }
@@ -967,17 +973,19 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
       })()}
 
       {/* Chat input — Figma gradient border */}
-      <ChatInput
-        inputValue={chat.inputValue}
-        onInputChange={chat.setInputValue}
-        onSend={chat.handleSend}
-        onKeyDown={chat.handleInputKeyDown}
-        onInput={chat.handleTextareaInput}
-        textareaRef={chat.textareaRef}
-        contextChips={chat.contextChips}
-        onRemoveChip={chat.removeContextChip}
-        onAddData={handleOpenAddData}
-      />
+      <div ref={inputWrapperRef}>
+        <ChatInput
+          inputValue={chat.inputValue}
+          onInputChange={chat.setInputValue}
+          onSend={chat.handleSend}
+          onKeyDown={chat.handleInputKeyDown}
+          onInput={chat.handleTextareaInput}
+          textareaRef={chat.textareaRef}
+          contextChips={chat.contextChips}
+          onRemoveChip={chat.removeContextChip}
+          onAddData={handleOpenAddData}
+        />
+      </div>
 
       {/* Add Data modal — portal renders above everything */}
       {addDataModalOpen && (
