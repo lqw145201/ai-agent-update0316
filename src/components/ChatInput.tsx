@@ -148,10 +148,8 @@ export function ChatInput({
                   type="button"
                   onClick={() => setDropdownOpen((v) => !v)}
                   aria-label="Add data"
-                  className={`shrink-0 size-[32px] flex items-center justify-center rounded-[var(--radius-button)] transition-colors ${
-                    dropdownOpen
-                      ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-                      : "text-[var(--foreground)] hover:bg-[var(--muted)]"
+                  className={`shrink-0 size-[32px] flex items-center justify-center rounded-[var(--radius-button)] transition-colors text-[var(--foreground)] hover:bg-[var(--muted)] ${
+                    dropdownOpen ? "bg-[var(--muted)]" : ""
                   }`}
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
