@@ -31,8 +31,6 @@ const PATH_AI_SPARKLE = "M12.059 8.49519C12.657 6.74519 15.075 6.69219 15.784 8.
 import { useChat } from "../hooks/useChat";
 import type { OutputBlock, BlockType, ApprovalData, WikiReviewData, CatalogActions } from "../hooks/useChat";
 
-// Add Data modal
-import { AddDataModal } from "./AddDataModal";
 import type { AddedSource } from "./AddDataModal";
 
 // LAYOUT — Shared input component
@@ -740,16 +738,16 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
   // STATE — All chat state from custom hook
   const chat = useChat({ onRegisterActions, onBlocksCreated });
 
-  // STATE — Add Data modal
-  const [addDataModalOpen, setAddDataModalOpen] = useState(false);
+  // STATE
   const [dismissedClarifyingId, setDismissedClarifyingId] = useState<string | null>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleOpenAddData = useCallback(() => setAddDataModalOpen(true), []);
-  const handleCloseAddData = useCallback(() => setAddDataModalOpen(false), []);
-  const handleDataAdded = useCallback((source: AddedSource) => {
-    onDataAdded?.(source);
-    setAddDataModalOpen(false);
+  const handleUploadFile = useCallback((file: File) => {
+    onDataAdded?.({ name: file.name, type: "file" });
+  }, [onDataAdded]);
+
+  const handleConnectSource = useCallback(() => {
+    onDataAdded?.({ name: "Sample source", type: "source" });
   }, [onDataAdded]);
 
   // INTERACTION — Landing send: notify parent then handle normally
@@ -820,12 +818,10 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
               contextChips={chat.contextChips}
               onRemoveChip={chat.removeContextChip}
               variant="landing"
-              onAddData={handleOpenAddData}
+              onUploadFile={handleUploadFile}
+              onConnectSource={handleConnectSource}
             />
           </div>
-          {addDataModalOpen && (
-            <AddDataModal onClose={handleCloseAddData} onDataAdded={handleDataAdded} />
-          )}
         </div>
       </div>
     );
@@ -983,14 +979,10 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
           textareaRef={chat.textareaRef}
           contextChips={chat.contextChips}
           onRemoveChip={chat.removeContextChip}
-          onAddData={handleOpenAddData}
+          onUploadFile={handleUploadFile}
+          onConnectSource={handleConnectSource}
         />
       </div>
-
-      {/* Add Data modal — portal renders above everything */}
-      {addDataModalOpen && (
-        <AddDataModal onClose={handleCloseAddData} onDataAdded={handleDataAdded} />
-      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 // COMPONENT — Chat input with gradient border (Figma Form2 design)
 // Portable version: no Figma svgPaths imports — uses IconSend from ./icons/IconSend
-// Features: context chips, auto-resizing textarea, gradient send button
+// Features: context chips, auto-resizing textarea, gradient send button, add-data dropdown
 
+import { useState, useRef, useEffect } from "react";
 import type { ContextChip } from "../hooks/useChat";
 import { IconSend } from "./icons/IconSend";
 import { CHAT_PANEL } from "../constants/strings";
@@ -17,7 +18,8 @@ interface ChatInputProps {
   contextChips: ContextChip[];
   onRemoveChip: (chipId: string) => void;
   variant?: "default" | "landing";
-  onAddData?: () => void;
+  onUploadFile?: (file: File) => void;
+  onConnectSource?: () => void;
 }
 
 // LAYOUT — Component
@@ -32,10 +34,28 @@ export function ChatInput({
   contextChips,
   onRemoveChip,
   variant = "default",
-  onAddData,
+  onUploadFile,
+  onConnectSource,
 }: ChatInputProps) {
   const isLanding = variant === "landing";
-  // COPY
+  const showAddBtn = onUploadFile || onConnectSource;
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (!dropdownRef.current?.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [dropdownOpen]);
+
   const placeholder = contextChips.length > 0 ? CHAT_PANEL.inputPlaceholderWithChips : CHAT_PANEL.inputPlaceholder;
 
   return (
@@ -84,7 +104,6 @@ export function ChatInput({
                     onClick={() => onRemoveChip(chip.id)}
                     aria-label={`Remove ${chip.path}`}
                   >
-                    {/* Small × close icon — inline since it's 8×8 */}
                     <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
                       <path
                         d="M1 1L7 7M7 1L1 7"
@@ -120,20 +139,84 @@ export function ChatInput({
             }}
           />
 
-          {/* LAYOUT — Bottom action bar: + Add data (left) | Send (right) */}
+          {/* LAYOUT — Bottom action bar: + icon (left) | Send (right) */}
           <div className="flex items-center pt-[6px]">
-            {onAddData && (
-              <button
-                type="button"
-                onClick={onAddData}
-                className="flex items-center gap-[5px] h-[30px] px-[10px] rounded-[var(--radius-button)] text-[14px] text-[var(--accent)] hover:bg-[var(--muted)] transition-colors shrink-0"
-              >
-                <svg width="13" height="13" viewBox="0 0 10 10" fill="none">
-                  <path d="M5 1V9M1 5H9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-                </svg>
-                <span>Add data</span>
-              </button>
+            {showAddBtn && (
+              <div className="relative" ref={dropdownRef}>
+                {/* + Add data icon button */}
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((v) => !v)}
+                  aria-label="Add data"
+                  className="shrink-0 size-[32px] flex items-center justify-center rounded-[var(--radius-button)] text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+
+                {/* Dropdown menu — opens above the button */}
+                {dropdownOpen && (
+                  <div
+                    className="absolute bottom-[calc(100%+6px)] left-0 z-50 rounded-[var(--radius-card)] bg-[var(--card)] overflow-hidden"
+                    style={{
+                      border: "1px solid var(--border)",
+                      boxShadow: "0 4px 16px 0 rgba(0,0,0,0.10), 0 1px 4px 0 rgba(0,0,0,0.06)",
+                      minWidth: "180px",
+                    }}
+                  >
+                    {/* Upload file */}
+                    <button
+                      type="button"
+                      onClick={() => { setDropdownOpen(false); fileInputRef.current?.click(); }}
+                      className="w-full flex items-center gap-[10px] px-[14px] py-[10px] text-left hover:bg-[var(--muted)] transition-colors"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 text-[var(--foreground)]">
+                        <path d="M7 9V2M4.5 4.5L7 2L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M2 10.5V12H12V10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span className="text-[13px] text-[var(--foreground)]" style={{ fontFamily: "var(--font-sans)" }}>
+                        Upload file
+                      </span>
+                    </button>
+
+                    {/* Divider */}
+                    <div className="h-px bg-[var(--border)]" />
+
+                    {/* Connect data source */}
+                    <button
+                      type="button"
+                      onClick={() => { setDropdownOpen(false); onConnectSource?.(); }}
+                      className="w-full flex items-center gap-[10px] px-[14px] py-[10px] text-left hover:bg-[var(--muted)] transition-colors"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 text-[var(--foreground)]">
+                        <circle cx="3" cy="7" r="2" stroke="currentColor" strokeWidth="1.3" />
+                        <circle cx="11" cy="3" r="2" stroke="currentColor" strokeWidth="1.3" />
+                        <circle cx="11" cy="11" r="2" stroke="currentColor" strokeWidth="1.3" />
+                        <path d="M5 7H7M9 3.5L7 6M9 10.5L7 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                      </svg>
+                      <span className="text-[13px] text-[var(--foreground)]" style={{ fontFamily: "var(--font-sans)" }}>
+                        Connect data source
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv,.json,.parquet"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) onUploadFile?.(f);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
             )}
+
             {/* INTERACTION — Send button: gradient icon from IconSend */}
             <button
               type="button"
@@ -147,7 +230,7 @@ export function ChatInput({
         </div>
       </div>
 
-      {/* Placeholder color override — muted-foreground is correct for placeholder text */}
+      {/* Placeholder color override */}
       <style>{`
         .chat-input-textarea::placeholder {
           color: var(--muted-foreground);
