@@ -143,26 +143,29 @@ export function ChatInput({
           <div className="flex items-center pt-[6px]">
             {showAddBtn && (
               <div className="relative" ref={dropdownRef}>
-                {/* + Add data icon button */}
+                {/* + Add data icon button — accent tint when dropdown open */}
                 <button
                   type="button"
                   onClick={() => setDropdownOpen((v) => !v)}
                   aria-label="Add data"
-                  className="shrink-0 size-[32px] flex items-center justify-center rounded-[var(--radius-button)] text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+                  className={`shrink-0 size-[32px] flex items-center justify-center rounded-[var(--radius-button)] transition-colors ${
+                    dropdownOpen
+                      ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                      : "text-[var(--foreground)] hover:bg-[var(--muted)]"
+                  }`}
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                   </svg>
                 </button>
 
-                {/* Dropdown menu — opens above the button */}
+                {/* Dropdown menu — opens above the button, no border */}
                 {dropdownOpen && (
                   <div
                     className="absolute bottom-[calc(100%+6px)] left-0 z-50 rounded-[var(--radius-card)] bg-[var(--card)] overflow-hidden"
                     style={{
-                      border: "1px solid var(--border)",
-                      boxShadow: "0 4px 16px 0 rgba(0,0,0,0.10), 0 1px 4px 0 rgba(0,0,0,0.06)",
-                      minWidth: "180px",
+                      boxShadow: "0 4px 20px 0 rgba(0,0,0,0.12), 0 1px 6px 0 rgba(0,0,0,0.08)",
+                      minWidth: "190px",
                     }}
                   >
                     {/* Upload file */}
@@ -171,17 +174,15 @@ export function ChatInput({
                       onClick={() => { setDropdownOpen(false); fileInputRef.current?.click(); }}
                       className="w-full flex items-center gap-[10px] px-[14px] py-[10px] text-left hover:bg-[var(--muted)] transition-colors"
                     >
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 text-[var(--foreground)]">
-                        <path d="M7 9V2M4.5 4.5L7 2L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M2 10.5V12H12V10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="shrink-0 text-[var(--foreground)]">
+                        <path d="M7.5 10V2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                        <path d="M4.5 5L7.5 2L10.5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M2 11.5V13H13V11.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                       <span className="text-[13px] text-[var(--foreground)]" style={{ fontFamily: "var(--font-sans)" }}>
                         Upload file
                       </span>
                     </button>
-
-                    {/* Divider */}
-                    <div className="h-px bg-[var(--border)]" />
 
                     {/* Connect data source */}
                     <button
@@ -189,11 +190,11 @@ export function ChatInput({
                       onClick={() => { setDropdownOpen(false); onConnectSource?.(); }}
                       className="w-full flex items-center gap-[10px] px-[14px] py-[10px] text-left hover:bg-[var(--muted)] transition-colors"
                     >
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 text-[var(--foreground)]">
-                        <circle cx="3" cy="7" r="2" stroke="currentColor" strokeWidth="1.3" />
-                        <circle cx="11" cy="3" r="2" stroke="currentColor" strokeWidth="1.3" />
-                        <circle cx="11" cy="11" r="2" stroke="currentColor" strokeWidth="1.3" />
-                        <path d="M5 7H7M9 3.5L7 6M9 10.5L7 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="shrink-0 text-[var(--foreground)]">
+                        <circle cx="3" cy="7.5" r="2" stroke="currentColor" strokeWidth="1.3" />
+                        <circle cx="12" cy="3" r="2" stroke="currentColor" strokeWidth="1.3" />
+                        <circle cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.3" />
+                        <path d="M5 7.5H8M10 3.5L8 7M10 11.5L8 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
                       </svg>
                       <span className="text-[13px] text-[var(--foreground)]" style={{ fontFamily: "var(--font-sans)" }}>
                         Connect data source
