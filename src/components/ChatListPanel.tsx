@@ -3,8 +3,8 @@
 // Follows design system: bg-popover, shadow-dropdown, rounded-[var(--radius-button)], hover:bg-background-hover
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { IconMore } from "./icons/IconMore";
+import { DropdownMenu } from "./DropdownMenu";
 import { IconClose } from "./icons/IconClose";
 import { IconWarning } from "./icons/IconWarning";
 import { IconPlus } from "./icons/IconPlus";
@@ -30,88 +30,6 @@ interface ChatListPanelProps {
   onChatTitleChange?: (title: string | null) => void;
 }
 
-/* ── Context menu dropdown ────────────────────────────────────── */
-
-// LAYOUT — Dropdown menu for chat item actions (rename, delete)
-function ChatContextMenu({
-  anchorRect,
-  onRename,
-  onDelete,
-  onClose,
-}: {
-  anchorRect: DOMRect;
-  onRename: () => void;
-  onDelete: () => void;
-  onClose: () => void;
-}) {
-  // STATE
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // INTERACTION — Close on click outside
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [onClose]);
-
-  // LAYOUT — Position below the anchor button
-  const top = anchorRect.bottom + 4;
-  const left = anchorRect.right;
-
-  return createPortal(
-    <div
-      ref={menuRef}
-      className="fixed z-50 bg-popover overflow-clip py-[4px] rounded-[var(--radius-button)] shadow-dropdown min-w-[120px]"
-      style={{ top, left, transform: "translateX(-100%)" }}
-    >
-      {/* Rename */}
-      <button
-        type="button"
-        className="h-[32px] w-full text-left flex items-center cursor-pointer select-none hover:bg-background-hover transition-colors"
-        onClick={() => { onRename(); onClose(); }}
-      >
-        <div className="flex items-center gap-[8px] pl-[16px] pr-[8px] size-full">
-          <span
-            className="flex-1 whitespace-nowrap text-popover-foreground"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-base)",
-              fontWeight: "var(--font-weight-normal)",
-              lineHeight: "1.5",
-            }}
-          >
-            {CHAT_LIST.rename}
-          </span>
-        </div>
-      </button>
-      {/* Delete */}
-      <button
-        type="button"
-        className="h-[32px] w-full text-left flex items-center cursor-pointer select-none hover:bg-background-hover transition-colors"
-        onClick={() => { onDelete(); onClose(); }}
-      >
-        <div className="flex items-center gap-[8px] pl-[16px] pr-[8px] size-full">
-          <span
-            className="flex-1 whitespace-nowrap text-destructive"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-base)",
-              fontWeight: "var(--font-weight-normal)",
-              lineHeight: "1.5",
-            }}
-          >
-            {CHAT_LIST.delete}
-          </span>
-        </div>
-      </button>
-    </div>,
-    document.body,
-  );
-}
 
 /* ── Rename dialog ────────────────────────────────────────────── */
 
@@ -468,11 +386,13 @@ function ChatItemRow({
 
       {/* LAYOUT — Context menu dropdown */}
       {menuOpen && anchorRect && (
-        <ChatContextMenu
+        <DropdownMenu
           anchorRect={anchorRect}
-          onRename={() => onRename(chat.id)}
-          onDelete={() => onDelete(chat.id)}
           onClose={() => setMenuOpen(false)}
+          items={[
+            { label: CHAT_LIST.rename, onClick: () => onRename(chat.id) },
+            { label: CHAT_LIST.delete, onClick: () => onDelete(chat.id), variant: "destructive" },
+          ]}
         />
       )}
     </div>
