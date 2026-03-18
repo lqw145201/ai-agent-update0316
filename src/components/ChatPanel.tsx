@@ -37,6 +37,7 @@ import type { AddedSource } from "./AddDataModal";
 
 // LAYOUT — Shared input component
 import { ChatInput } from "./ChatInput";
+import { SuggestedQuestions } from "./SuggestedQuestions";
 
 // LAYOUT — Tool calls block
 import { ToolCallsBlock } from "./ToolCallsBlock";
@@ -892,8 +893,9 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
       {/* Chat messages */}
       <div className="flex-1 overflow-y-auto px-[16px] py-[16px]">
         <div className="flex flex-col gap-[16px] items-center">
-          {chat.messages.map((msg) =>
-            msg.role === "user" ? (
+          {chat.messages.map((msg, idx) => {
+            const isLastMsg = idx === chat.messages.length - 1;
+            return msg.role === "user" ? (
               <div key={msg.id} className="flex items-start justify-end w-full">
                 <div className="bg-muted rounded-tl-[var(--radius-card)] rounded-tr-[var(--radius-card)] rounded-br-[var(--radius-button)] rounded-bl-[var(--radius-card)] max-w-[80%]">
                   <div className="px-[16px] py-[8px]">
@@ -920,9 +922,15 @@ export function ChatPanel({ onBlockClick, onBlockHover, hoveredBlock, onSaveAsVi
                   <WikiReviewBlockView wikiReview={msg.wikiReview} onSave={chat.handleWikiSave} onDismiss={chat.handleWikiDismiss} onBlockClick={onBlockClick} onBlockHover={onBlockHover} hoveredBlock={hoveredBlock} />
                 )}
                 {msg.blocks?.map((block) => renderBlock(block))}
+                {isLastMsg && !chat.isTyping && msg.suggestedQuestions && msg.suggestedQuestions.length > 0 && (
+                  <SuggestedQuestions
+                    questions={msg.suggestedQuestions}
+                    onSelect={(q) => { chat.setInputValue(q); chat.textareaRef.current?.focus(); }}
+                  />
+                )}
               </div>
-            ),
-          )}
+            );
+          })}
           {chat.isTyping && (
             <div className="flex items-start w-full">
               <div className="bg-card relative rounded-bl-[var(--radius-button)] rounded-br-[var(--radius-card)] rounded-tl-[var(--radius-card)] rounded-tr-[var(--radius-card)]">

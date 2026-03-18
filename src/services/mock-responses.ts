@@ -199,6 +199,12 @@ FROM marketing.campaigns;`;
           schema: "bronze.customer_360",
           status: "pending",
         },
+        suggestedQuestions: [
+          "Now build the Silver layer",
+          "What are the join keys across tables?",
+          "Show me the Gold layer schema",
+          "How do I query this data?",
+        ],
       },
     ];
   }
@@ -241,6 +247,12 @@ FROM marketing.campaigns;`;
         role: "ai",
         text: "Here are your revenue figures — Northeast leads with $4.25M across 12,450 customers.",
         blocks: [mockTable],
+        suggestedQuestions: [
+          "Show me a chart of this",
+          "Break down by month",
+          "Filter to top 5 regions",
+          "Save this as a view",
+        ],
       },
     ];
   }
@@ -283,7 +295,18 @@ FROM marketing.campaigns;`;
   };
   return [
     { id: `ai-${ts}-1`, role: "ai", text: "I've analyzed your request and generated a query. Here are the results:", blocks: [defaultSql] },
-    { id: `ai-${ts}-2`, role: "ai", text: "Found 100 matching records. Here's a preview of the data:", blocks: [defaultTable] },
+    {
+      id: `ai-${ts}-2`,
+      role: "ai",
+      text: "Found 100 matching records. Here's a preview of the data:",
+      blocks: [defaultTable],
+      suggestedQuestions: [
+        "Visualize this as a chart",
+        "Filter by date range",
+        "Save as a view",
+        "Explain this query",
+      ],
+    },
   ];
 }
 

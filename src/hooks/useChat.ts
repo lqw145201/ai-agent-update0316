@@ -79,6 +79,7 @@ export interface ChatMessage {
   approval?: ApprovalData;
   wikiReview?: WikiReviewData;
   toolCalls?: ToolCallGroup;
+  suggestedQuestions?: string[];
 }
 
 // STATE — Initial messages seed
