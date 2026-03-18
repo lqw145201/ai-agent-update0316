@@ -9,6 +9,7 @@ export interface DropdownMenuItem {
   label: string;
   onClick: () => void;
   variant?: "default" | "destructive";
+  icon?: React.ReactNode;
 }
 
 interface DropdownMenuProps {
@@ -45,7 +46,7 @@ export function DropdownMenu({ anchorRect, items, onClose, align = "right", plac
     <div
       ref={menuRef}
       className="fixed z-50 bg-popover overflow-clip py-[4px] rounded-[var(--radius-button)] shadow-dropdown min-w-[120px]"
-      style={posStyle}
+      style={{ ...posStyle, border: "1px solid var(--border)" }}
     >
       {items.map((item) => (
         <button
@@ -54,7 +55,12 @@ export function DropdownMenu({ anchorRect, items, onClose, align = "right", plac
           className="h-[32px] w-full text-left flex items-center cursor-pointer select-none hover:bg-background-hover transition-colors"
           onClick={() => { item.onClick(); onClose(); }}
         >
-          <div className="flex items-center px-[16px] size-full">
+          <div className="flex items-center gap-[8px] px-[16px] size-full">
+            {item.icon && (
+              <span className="flex items-center shrink-0 text-secondary-foreground">
+                {item.icon}
+              </span>
+            )}
             <span
               className={`flex-1 whitespace-nowrap ${item.variant === "destructive" ? "text-destructive" : "text-popover-foreground"}`}
               style={{
